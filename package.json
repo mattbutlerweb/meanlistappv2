@@ -1,0 +1,21 @@
+{
+  "name": "listappv2",
+  "version": "1.0.0",
+  "description": "MEAN Stack List App V2",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+      "express": "*",
+      "mongoose": "*",
+      "bcryptjs": "*",
+      "cors": "*",
+      "jsonwebtoken": "*",
+      "body-parser": "*",
+      "passport": "*",
+      "passport-jwt": "*"
+  },
+  "author": "Matt Butler",
+  "license": "ISC"
+}

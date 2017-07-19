@@ -1,0 +1,50 @@
+#listmenu {
+
+  width:25%;
+
+}
+
+.contentdivs{
+
+  min-height:93vh;
+  padding:0 1vw;
+  overflow:scroll;
+  display: inline-block;
+  float:left;
+
+}
+
+#listcontent {
+
+  width:75%;
+  background-color:#fff;
+  color: #000;
+
+}
+
+#listcontainer{
+
+  width: 100%;
+  margin-top: 3em;
+  max-height:93vh;
+
+}
+
+#listdetails h1{
+
+  text-align:center;
+
+}
+
+.itemcomplete{
+
+  text-decoration:line-through;
+  color: #333;
+
+}
+
+.listItemQuantity{
+
+  margin: 0 1%;
+
+}

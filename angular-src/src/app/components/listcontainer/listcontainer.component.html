@@ -1,0 +1,371 @@
+<div id="listcontainer">
+
+<div id="listmenu" class="contentdivs">
+
+    <div id="addnewlist">
+
+      <h2> Add New List </h2>
+
+      <div *ngIf="addlistError" id="error" class="alert-danger">
+
+        <p>
+          {{addlistErrorMessage}}
+        </p>
+
+      </div>
+
+      <form (submit)="onNewListSubmit()">
+
+        <div class='form-group'>
+
+          <label> List Name </label>
+
+          <input type="text" [(ngModel)]="newlistname" name="newlistname" class='form-control' />
+
+        </div>
+
+        <div class='form-group'>
+
+          <label> Please select a List Type </label>
+
+          <select class="form-control select-picker" [(ngModel)]="newlisttype" name="newlisttype">
+
+              <option value="Todo">Todo</option>
+
+              <option value="Shopping">Shopping</option>
+
+          </select>
+
+        </div>
+
+        <input type='submit' class="btn btn-primary" value='Add New List'/>
+
+      </form>
+
+    </div>
+
+    <div id="userslists">
+
+      <h2> Your Lists </h2>
+
+      <div *ngIf="editListTitle">
+
+        <h3> Edit List Name </h3>
+
+        <div *ngIf="editListNameError" id="error" class="alert-danger">
+
+          <p>
+            {{editListNameErrorMessage}}
+          </p>
+
+        </div>
+
+        <form (submit)="saveEditListName(editListNameId)">
+
+            <input type="text" [(ngModel)]="editListName" name="editListName" class='column col-md-10 well-sm' />
+
+            <input type='submit' class="btn btn-primary column col-md-2" value='Save'/>
+
+        </form>
+
+      </div>
+
+      <div *ngFor="let list of lists" class="row">
+
+      <li class='btn btn-primary column col-md-8' (click)="selectList(list._id, list.name, list.listtype)"  style="display:block">
+
+        {{list.name}}
+
+      </li>
+
+      <li class='btn btn-primary column col-md-2' (click)="showEditList(list._id, list.name)"  style="display:block">
+
+        Edit
+
+      </li>
+
+      <li class='btn btn-primary column col-md-2' (click)="deleteList(list._id, list.name)"  style="display:block">
+
+        Delete
+
+      </li>
+
+      </div>
+
+    </div>
+
+</div>
+
+<div id="listcontent" class="contentdivs">
+
+  <div *ngIf="listSelected" id="addlistitem">
+
+    <h2> Add New List Item </h2>
+
+    <div *ngIf="addListItemError" id="error" class="alert-danger">
+
+      <p>
+        {{addListItemErrorMessage}}
+      </p>
+
+    </div>
+
+    <div *ngIf="listType === 'Todo'" id="addlistitemform">
+
+      <form (submit)="onNewListItemSubmitTodo(listId)">
+
+        <div class="row">
+
+          <label class="column col-md-2"> List Item Description </label>
+
+          <input type="text" [(ngModel)]="newListItemName" name="newListItemName" class='column col-md-7 well-sm' />
+
+          <input type='submit' class="btn btn-primary column col-md-2 col-md-offset-1" value='Add New List Item'/>
+
+        </div>
+
+      </form>
+
+    </div>
+
+    <div *ngIf="listType === 'Shopping'" id="addlistitemform">
+
+      <form (submit)="onNewListItemSubmitShopping(listId)">
+
+        <div class="row">
+
+          <label class="column col-md-2"> List Item Description: </label>
+
+          <input type="text" [(ngModel)]="newListItemName" name="newListItemName" class='column col-md-4 well-sm' />
+
+          <label class="column col-md-1"> Quantity: </label>
+
+          <input type="number" [(ngModel)]="newListItemQty" name ="newListItemQty" class="column col-md-2 well-sm" />
+
+          <input type='submit' class="btn btn-primary column col-md-1 col-md-offset-1" value='Add List Item'/>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+  <div id="listdetails">
+
+    <h1> {{listname}} </h1>
+
+    <div *ngIf="listItemsEmpty">
+
+      {{listItemsEmpty}}
+
+    </div>
+
+    <div *ngIf="listSelected === false">
+
+      <p>
+         Please select a list from your lists on the left hand side.
+      </p>
+
+    </div>
+
+    <div *ngIf="editList">
+
+      <div *ngIf="editListItemError" id="error" class="alert-danger">
+
+        <p>
+          {{editListItemErrorMessage}}
+        </p>
+
+      </div>
+
+      <form (submit)="editListItem(editListId)">
+
+        <div class="row">
+
+          <label class="column col-md-2"> List Item Description </label>
+
+          <input type="text" [(ngModel)]="editListItemName" name="editListItemName" class='column col-md-7 well-sm' />
+
+          <input type='submit' class="btn btn-primary column col-md-2 col-md-offset-1" value='Edit List Item'/>
+
+        </div>
+
+      </form>
+
+    </div>
+
+    <div *ngIf="listItems && listType === 'Shopping'">
+
+      <div *ngFor="let listItem of listItems">
+
+        <div class="shoppinglistitem row">
+
+          <div class="shoppinglistitemname column col-md-6">
+
+            <p>
+
+              {{listItem.name}}
+
+            </p>
+
+          </div>
+
+          <div class="shoppinglistitemquantity column col-md-4">
+
+              <button class="btn btn-primary" *ngIf="listItem.quantity == 1" disabled> - </button>
+
+              <button class="btn btn-primary" *ngIf="listItem.quantity > 1" (click)="lowerItemQuantity(listItem._id, listItem.quantity)"> - </button>
+
+                <span class="listItemQuantity"> {{listItem.quantity}} </span>
+
+              <button class="btn btn-primary" (click)="raiseItemQuantity(listItem._id, listItem.quantity)"> + </button>
+
+          </div>
+
+          <div class="column col-md-1">
+
+            <p>
+
+              <button class="btn btn-primary" (click)="showEditListItem(listItem._id, listItem.name, listItem.quantity)"> Edit </button>
+
+            </p>
+
+          </div>
+
+          <div class="column col-md-1">
+
+            <p>
+
+              <button class="btn btn-primary" (click)="deleteListItem(listItem._id, listItem.name)"> Delete </button>
+
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div *ngIf="listItems && listType === 'Todo'">
+
+      <div *ngFor="let listItem of listItems">
+
+        <div *ngIf="editListTodo">
+
+          <div *ngIf="editListItemError" id="error" class="alert-danger">
+
+            <p>
+              {{editListItemErrorMessage}}
+            </p>
+
+          </div>
+
+          <form (submit)="editListItemTodo(editListId)">
+
+            <div class="row">
+
+              <label class="column col-md-2"> List Item Description </label>
+
+              <input type="text" [(ngModel)]="editListItemName" name="editListItemName" class='column col-md-7 well-sm' />
+
+              <input type='submit' class="btn btn-primary column col-md-2 col-md-offset-1" value='Edit List Item'/>
+
+            </div>
+
+          </form>
+
+        </div>
+
+        <div *ngIf="listItem.complete == true" class="todolistitem row">
+
+          <div class="todolistitemname column col-md-8">
+
+            <p id="p{{listItem._id}}" class="itemcomplete">
+
+              {{listItem.name}}
+
+            </p>
+
+          </div>
+
+          <div class="column col-md-2">
+
+            <span> Completed: </span><input type="checkbox" id="todoStatus{{listItem._id}}" (click)="todoListStatus(listItem._id, listItem.name)" checked/>
+
+          </div>
+
+          <div class="column col-md-1">
+
+            <p>
+
+              <button class="btn btn-primary" (click)="showEditListItem(listItem._id, listItem.name, listItem.quantity)"> Edit </button>
+
+            </p>
+
+          </div>
+
+          <div class="column col-md-1">
+
+            <p>
+
+              <button class="btn btn-primary" (click)="deleteListItem(listItem._id, listItem.name)"> Delete </button>
+
+            </p>
+
+          </div>
+
+        </div>
+
+        <div *ngIf="listItem.complete != true" class="todolistitem row">
+
+          <div class="todolistitemname column col-md-8">
+
+            <p id="p{{listItem._id}}">
+
+              {{listItem.name}}
+
+            </p>
+
+          </div>
+
+          <div class="column col-md-2">
+
+            <span> Completed: </span><input type="checkbox" id="todoStatus{{listItem._id}}" (click)="todoListStatus(listItem._id, listItem.name)"/>
+
+          </div>
+
+          <div class="column col-md-1">
+
+            <p>
+
+              <button class="btn btn-primary" (click)="showEditListItem(listItem._id, listItem.name, listItem.complete)"> Edit </button>
+
+            </p>
+
+          </div>
+
+          <div class="column col-md-1">
+
+            <p>
+
+              <button class="btn btn-primary" (click)="deleteListItem(listItem._id, listItem.name)"> Delete </button>
+
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+</div>
